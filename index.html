@@ -1,0 +1,91 @@
+<html ng-app>
+<head >
+    <meta charset="iso-8859-2">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+   
+    <script src="lib/jquery-2.0.3.min.js"></script>
+    
+    <script src="lib/angular.min.js"></script>
+    
+    <script src="lib/jquery.jsPlumb-1.5.2-min.js"></script>
+    <script src="lib/jquery.flot.min.js"></script>
+
+    <script src="lib/jquery-ui-1.10.3.custom.min.js"></script>
+    <script src="lib/underscore.js"></script>
+    <script src="js/index.js"></script>
+        
+    <link rel="stylesheet" href="css/jquery.mobile-1.3.1.min.css" />
+    <link rel="stylesheet" href="css/objects.css" />
+    <link rel="stylesheet" href="css/jquery-ui.css" />
+    
+    <script src="js/customParams.js"></script>
+    
+    <script src="js/solver.js"></script>
+    
+    <script src="js/objects/block.js"></script>
+    <script src="js/objects/step.js"></script>
+    <script src="js/objects/scope.js"></script>
+    <script src="js/objects/integrator.js"></script>
+    <script src="js/objects/sum.js"></script>
+    <script src="js/objects/feedback.js"></script>
+    <script src="js/objects/constant.js"></script>
+    <script src="js/objects/gain.js"></script>
+    <script src="js/objects/transferFcn.js"></script>
+    <script src="js/objects/multiply.js"></script>
+
+</head>
+<body>
+    <header>
+        <div class="leftHeader">
+            <ul class="icons ui-widget ui-helper-clearfix">
+            <li class="ui-state-default ui-corner-all" id="showToolbox"><span class="ui-icon ui-icon-wrench"></span></li>
+            </ul>
+        </div>
+        <div class="rightHeader">
+            <ul class="icons ui-widget ui-helper-clearfix">
+            <li class="ui-state-default ui-corner-all" ><span class="ui-icon ui-icon-play"></span></li>
+            </ul>
+        </div>
+    </header>
+    <div id="container">
+        <div id="toolbox" class="box boxClosed">
+            <div class="boxHeader">Narzędzia
+                <ul class="icons ui-widget ui-helper-clearfix">
+                <li class="ui-state-default ui-corner-all boxClose" ><span class="ui-icon ui-icon-circle-close "></span></li>
+                </ul>
+            </div>
+            <div ng-controller="Toolbox" >
+                <div id="accordion">
+                    <div ng-repeat="group in tools">
+                        <h3><a href="#">First</a></h3>
+                        <div>
+                            <div class="spacer" ng-repeat="tool in group.items">
+                                <div id="{{tool.id}}" class="block {{tool.type}}">
+                                    <span class="blockImage">
+                                        <span class="blockText">{{tool.name}}</span>
+
+                                    </span>
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        </div>
+        <div id="page" ng-controller="Page">
+            <div ng-repeat="object in objects" class="block object {{object.settings.type}}" id="{{object.settings.id}}">
+                    <span class="blockImage">
+                        <span class="blockText">{{object.settings.name}}</span>
+                    </span>
+            </div>
+        </div>
+        
+    </div>
+    
+   
+</body>
+</html>

@@ -1,0 +1,100 @@
+body{ font-family:"Segoe UI", Helvetica, Verdana;font-size: 11px; margin: 50px; color:white;}
+			#wrapper{width:700px;}
+			h1{font-weight:normal;}
+			.header { margin-top: 2em;font-weight:normal; }
+			#dialog_link {padding: .4em 1em .4em 20px;text-decoration: none;position: relative;}
+			#dialog_link span.ui-icon {margin: 0 5px 0 0;position: absolute;left: .2em;top: 50%;margin-top: -8px;}
+			.icons {margin: 0; padding: 0;}
+			.icons li {margin: 2px; position: relative; padding: 4px 0; cursor: pointer; float: left;  list-style: none;}
+			.icons span.ui-icon {float: left; margin: 0 4px;}
+			#verticalSliders{height:140px;padding-top:20px;}
+            #verticalSliders > div{float:left;margin:20px;
+                                  
+            }
+            
+
+body {
+    margin:0;
+    border: 5px #3399ff solid;
+
+}
+
+.leftHeader, .rightHeader {
+    width:50%;
+    background:#3399ff;
+    padding-bottom: 3px;
+}
+.leftHeader {
+    float:left;
+}
+.rightHeader {
+    float:right;
+}
+.rightHeader .icons {
+    float:right;
+}
+.ui-accordion-content {
+    height:auto !important;
+}
+
+.boxHeader{
+    background:#3399ff;
+    color:white;
+    font-size:1.1em;
+    line-height:23px;
+    padding-bottom:5px;
+    text-transform:uppercase;
+    font-weight: bold;
+    
+    text-align:center;
+}
+.boxHeader:hover {
+    cursor:move;
+    
+}
+.box {
+    background:white;
+    z-index:5;
+    position:absolute !important;
+    width:200px;
+    height:200px;
+    top:50px;
+    left:20px;
+    border: 5px #3399ff solid;
+}
+.boxHeader h2 {
+    color:white;
+    float:left;
+}
+.boxClose {
+    position:absolute !important;
+    top:-5px;
+    right:-5px;
+    margin:1px;
+}
+.boxClosed {
+    display:none;
+}
+
+
+/***********
+
+BLOCKS
+
+*/
+.object {
+    position:absolute;
+}
+.block {
+    border: 2px #525252 solid;
+    height: 50px;
+    width:50px;
+}
+.blockImage {
+    border: 2px #525252 solid;
+    width:100%;
+}
+.blockText {
+    color: #525252;
+}
+
