@@ -4,8 +4,8 @@
     var objects=[];
     var sources = ['step','constant'];
     var sourcesSmall = ['feedback'];
-    var timeHorizon = 10;
-    var h = 0.1;
+    var timeHorizon =1;
+    var h =1;
     
     function validateModel(){
                 
@@ -190,56 +190,7 @@
         }
     }
     
-    function calculateIntegratorsInSameBranch(Order)
-    {
-        var row = 0;
-        var obje;
-        for(var i=0; i<Order.length ; i++)
-        {
-            
-            obje = _.filter(objects,function(obj){ return obj.settings.id == Order[i][0][0].sourceId});
-           // if(obje[0].settings.type!=='feedback')
-           // {
-                console.log(Order[i]);
-                for(var j=0; j<Order[i].length ; j++)
-                {
-
-                     obje = _.filter(objects,function(obj){ return obj.settings.id == Order[i][j][0].sourceId});
-                                           // console.log(obje);
-                                             //   if(obje[0].settings.type =='feedback')
-
-                     if(obje[0].settings.type === 'integrator') 
-                     {
-                         obje[0].setIntegrator(row);
-                         row++;
-                     }
-                     if(j===Order.length-1)
-                     {
-                         obje = _.filter(objects,function(obj){ return obj.settings.id == Order[i][j][0].targetId});
-                         if(obje[0].type==='scope')
-                             row=0;
-                         
-                     }
-                    console.log('integrator',obje[0].settings.id);
-
-                }
-            //}
-            
-            
-        }
-        
-        function isIntegratorInSameBranch()
-        {
-            var obje,objeend;
-        
-            for(var i=0; i<Order.length ; i++)
-            {
-                obje = _.filter(objects,function(obj){ return obj.settings.id == Order[i][0][0].sourceId});
-                objeend = _.filter(objects,function(obj){ return obj.settings.id == Order[i][Order[i].length-1][0].targetId});
-            }
-            
-        }
-    }
+   
     
     methods = {	
 		
@@ -256,12 +207,24 @@
             
             for(var i=0;i<sources.length;i++)
                 Order = buildBranchBySourceType(sources[i],Order); //Build branches as array row, where source is sources array element
+            
+            var noSource = 0;
+            for(var i=0;i<sources.length;i++)
+            {
+               
+                if(getObjectByType(objects,sources[i]).length===0)
+                    noSource++;
+            }    
+            console.log(noSource);
+            if(noSource===2)
+                Order = buildBranchBySourceType('integrator',Order);
+               
+           
             Order = buildBranchBySourceType('feedback',Order); //Build branches as array row, where source is feedback
+           
                      
             orderBranchesByPriority(Order); //make Order in correct order
-            console.log(Order);
-            calculateIntegratorsInSameBranch(Order);
-            console.log(Order);
+           console.log(Order);
                 var  y = 0 ;
                 var time = 0;
                 var h=0.01;
@@ -271,7 +234,7 @@
                        console.log('####');
                         console.log('####'); console.log('####');
                 console.time('someFunction timer');
-                while(time<10)
+                while(time<timeHorizon)
                     {
                    
                         
@@ -289,7 +252,7 @@
                                         y=obje[0].outputValue(y,h,time);
                                        
                                         var tar =  _.filter(objects,function(obj){ return obj.settings.id == Order[i][j][0].targetId});
-                                                    if(tar[0].settings.type==='sum')
+                                                    if(tar[0].settings.type==='sum' || tar[0].settings.type==='multiply' )
                                                         {
                                                             //console.log(Order[i][j][0].sourceIdParam);
                                                             tar[0].updatePreviousValues(Order[i][j][0].sourceIdParam,y);
@@ -305,7 +268,7 @@
                                                y=obje[0].outputValue(y,h,time);
                                                
                                                var tar =  _.filter(objects,function(obj){ return obj.settings.id == Order[i][j][0].targetId});
-                                                    if(tar[0].settings.type==='sum')
+                                                    if(tar[0].settings.type==='sum' || tar[0].settings.type==='multiply')
                                                         {
                                                          //   console.log(Order[i][j][0].sourceIdParam);
                                                             tar[0].updatePreviousValues(Order[i][j][0].sourceIdParam,y);

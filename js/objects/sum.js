@@ -3,13 +3,13 @@ var Sum = function(config){
         'id' : 'sum',
         'name' : 'sum',
         'type' : 'sum',
-        'in' : '3',
+        'in' : '2',
         'out' : '1',
         'left' : '0',
         'top' : '0',
         'inPos' : [{'position':positions.left, 'func':'add'},
                     {'position':positions.bottom, 'func':'sub'},
-                    {'position':positions.top, 'func':'sub'}],
+                    ],
         'outPos' : [{'position':positions.right}],
         
 
@@ -28,21 +28,14 @@ var Sum = function(config){
   
     this.parameters = [
         {   
-            'type' : 'textPositionsIn',
+            'type' : 'text',
             'label' : '',
-            'value' : [positions.left,positions.bottom,positions.top],
-            'id' : 'ItextPositionsIn',
-            'func' : ['add','sub','sub'],
+            'value' : '+-',
+            'id' : 'sumSetting',
+            'func' : ['add','sub'],
             'positionsLabel' : ['Prawo','Lewo','Dó³','Góra'],
         },
-       /* {   
-            'type' : 'controlgroup',
-            'label' : '',
-            'value' : [positions.right],
-            'id' : 'subCheckbox',
-            'positions' : [positions.right,positions.left,positions.bottom,positions.top],
-            'positionsLabel' : ['Prawo','Lewo','Dó³','Góra'],
-        },*/
+      
         
         
        
@@ -73,19 +66,29 @@ function updateFunc(functions){
 }
 Sum.prototype = new Block();
 Sum.prototype.updateParameters = function(){
-  
     
-  
+    var allParams = $('#'+this.settings.id+'Parameters').find('.boxParameterContent'); 
+    var inputsString = allParams.find('#'+this.settings.id+this.parameters[0].id).val();
    this.settings.inPos.length = 0;
-   
-   for(var i=0; i< this.parameters[0].value.length; i++) 
-       this.settings.inPos.push({'position':this.parameters[0].value[i],'func':this.parameters[0].func[i]});
+    var keys = $.map(positions, function(v, i){
+   return i;
+ });
+   var func;
+   for(var i=0; i< inputsString.length; i++) 
+   {
+       if(inputsString[i]==='-')
+           func = 'sub';
+        else
+               func = 'add';
+           
+       this.settings.inPos.push({'position':positions[keys[i]],'func':func});
+   }
    
    updateFunc(this.settings.inPos);
    
    
    
-   this.settings.in = this.parameters[0].value.length;
+   this.settings.in = inputsString.length;
    this.previousValues = buildPreviousValuesObject(this.settings.inPos);
    
   
@@ -94,8 +97,8 @@ Sum.prototype.updateParameters = function(){
    
    this.endpoints.length = 0;
    
-  // this.setConnectors();
- //  this.updatePosition();
+   this.setConnectors();
+   this.updatePosition();
    
 }
 Sum.prototype.outputValue = function(){

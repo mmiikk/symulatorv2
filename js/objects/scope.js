@@ -34,6 +34,8 @@ var Scope = function(config){
     ];
 }
 
+
+
 Scope.prototype = new Block();
 Scope.prototype.outputValue = function(y,h,time){
     console.log(y);

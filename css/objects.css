@@ -16,7 +16,7 @@ body{ font-family:"Segoe UI", Helvetica, Verdana;font-size: 11px; margin: 50px; 
 body {
     margin:0;
     border: 5px #3399ff solid;
-
+    background:url(data:image/gif;base64,R0lGODlhFAAUAIAAAMDAwP///yH5BAEAAAEALAAAAAAUABQAAAImhI+pwe3vAJxQ0hssnnq/7jVgmJGfGaGiyoyh68GbjNGXTeEcGxQAOw==);
 }
 
 .leftHeader, .rightHeader {
@@ -35,7 +35,9 @@ body {
 }
 .ui-accordion-content {
     height:auto !important;
+    overflow: visible !important;
 }
+
 
 .boxHeader{
     background:#3399ff;
@@ -75,7 +77,48 @@ body {
 .boxClosed {
     display:none;
 }
+.boxParameter{
+    position:absolute;   
+    height:auto;
+}
+.boxParameterContent{
+    padding:5  5 5 5; 
+}
+.boxParameterContent .ui-slider{
+    height:10px;
+    width:80%;
+    float:left;
+    
+ 
+}
 
+.boxParameterContent h3{
+   color:#525252;
+   
+    
+}
+
+.rangeLabel {
+    font-size:1.17em;
+    margin-left:5px;
+    color:#525252;
+}
+
+.plot {
+    display:none;
+}
+.plotArea{
+    min-height: 190px;
+    
+}
+/********
+
+TOOLBOX
+***
+*/
+#Toolbox {
+    height:auto;
+}
 
 /***********
 
@@ -89,6 +132,7 @@ BLOCKS
     border: 2px #525252 solid;
     height: 50px;
     width:50px;
+    background: white;
 }
 .blockImage {
     border: 2px #525252 solid;
@@ -98,3 +142,15 @@ BLOCKS
     color: #525252;
 }
 
+/******
+
+FEEDBACK
+
+***/
+
+.feedback {
+    background:url('../img/feedback.png') repeat-x;
+    
+    background-position:-2 20;
+    border:0;
+}

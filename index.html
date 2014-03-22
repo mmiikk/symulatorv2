@@ -1,6 +1,6 @@
 <html ng-app>
 <head >
-    <meta charset="iso-8859-2">
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title></title>
     <meta name="description" content="">
@@ -23,9 +23,10 @@
     <link rel="stylesheet" href="css/jquery-ui.css" />
     
     <script src="js/customParams.js"></script>
+    <script src="js/save.js"></script>
     
     <script src="js/solver.js"></script>
-    
+    <script src="js/test.js"></script>
     <script src="js/objects/block.js"></script>
     <script src="js/objects/step.js"></script>
     <script src="js/objects/scope.js"></script>
@@ -36,6 +37,7 @@
     <script src="js/objects/gain.js"></script>
     <script src="js/objects/transferFcn.js"></script>
     <script src="js/objects/multiply.js"></script>
+    <script src="js/objects/mathfcn.js"></script>
 
 </head>
 <body>
@@ -47,13 +49,14 @@
         </div>
         <div class="rightHeader">
             <ul class="icons ui-widget ui-helper-clearfix">
-            <li class="ui-state-default ui-corner-all" ><span class="ui-icon ui-icon-play"></span></li>
+            <li class="ui-state-default ui-corner-all" ><span class="ui-icon ui-icon-play" id="run"></span></li>
+            <li class="ui-state-default ui-corner-all" ><span class="ui-icon ui-icon-disk" id="save"></span></li>
             </ul>
         </div>
     </header>
     <div id="container">
         <div id="toolbox" class="box boxClosed">
-            <div class="boxHeader">Narzędzia
+            <div class="boxHeader">NarzÄdzia
                 <ul class="icons ui-widget ui-helper-clearfix">
                 <li class="ui-state-default ui-corner-all boxClose" ><span class="ui-icon ui-icon-circle-close "></span></li>
                 </ul>
@@ -61,7 +64,7 @@
             <div ng-controller="Toolbox" >
                 <div id="accordion">
                     <div ng-repeat="group in tools">
-                        <h3><a href="#">First</a></h3>
+                        <h3><a href="#">{{group.groupName}}</a></h3>
                         <div>
                             <div class="spacer" ng-repeat="tool in group.items">
                                 <div id="{{tool.id}}" class="block {{tool.type}}">
@@ -81,7 +84,33 @@
                     <span class="blockImage">
                         <span class="blockText">{{object.settings.name}}</span>
                     </span>
+                    
             </div>
+            <div ng-repeat="object in objects" >
+                   <div class="box boxParameter boxClosed" id="{{object.settings.id}}Parameters" style="top:{{object.settings.top}}; left:{{object.settings.left}};">
+                       <div class="boxHeader">{{object.settings.id}} Parametry
+                            <ul class="icons ui-widget ui-helper-clearfix">
+                            <li class="ui-state-default ui-corner-all boxClose" ><span class="ui-icon ui-icon-circle-close "></span></li>
+                            </ul>
+                       </div>
+                       <div class="boxParameterContent">
+                            <div ng-repeat="parameter in object.parameters" >
+                                <h3>{{parameter.label}}</h3>
+                                <div class="{{parameter.type}}Container">
+                                    <input type="{{parameter.type}}" id="{{object.settings.id}}{{parameter.id}}" class="{{parameter.type}}" value="{{parameter.value}}" >
+                                    <div id="{{parameter.id}}Plot" class=""></div>
+                                    
+                                </div>
+                            </div>
+                            <input type="submit" value="Zapisz" ng-click="object.updateParameters();">
+
+                       </div>
+                    </div>
+                    
+            </div>
+            
+            
+            
         </div>
         
     </div>

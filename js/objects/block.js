@@ -109,3 +109,13 @@ Block.prototype.setConnectors = function(){
         };
     }
 }
+Block.prototype.setParametersDraggable = function(){
+    $(document).ready(setParametersDraggable(this.settings.id));
+   
+    function setParametersDraggable(id){
+        return function(){
+            $( '#'+id+'Parameters').draggable();
+            
+        };
+    }  
+}

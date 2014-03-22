@@ -61,6 +61,26 @@ Array.prototype.move = function (old_index, new_index) {
  });
  
  $(document).ready(function(){
+    $('#run').click(function(){
+      angular.element('[ng-controller=Page]').scope().setToInitial();
+      $().solver('init',[jsPlumb.getAllConnections(),angular.element('[ng-controller=Page]').scope().objects]);   
+    });
+    
+    $('#save').click(function(){
+        var  data = angular.element('[ng-controller=Page]').scope().getObjects();
+    //    saveToFile(data);
+        tfc(1,0.5,0);
+      //download('test.txt', data);
+    });
+    
+    
+    
+    
+    $('.block').each(function(){
+       console.log($(this).id); 
+        
+    }); 
+     
     $('#showToolbox').click(function(){
        $('#toolbox').toggleClass('boxClosed'); 
     });
@@ -108,9 +128,44 @@ Array.prototype.move = function (old_index, new_index) {
 function clickable(selector){
     return function(){
         var obj = $('#page').find('#'+selector);
-           obj.click(function(){
-              console.log('c');
-                if(obj.hasClass('clicked'))
+           obj.dblclick(function(){
+               var params = $('#page').find('#'+selector+'Parameters');
+               params.removeClass('boxClosed');
+               var closeParams = params.find('.boxClose');
+               closeParams.click(function(){
+                   params.addClass('boxClosed');
+               })
+               
+               var save = params.find('input[type=submit]');
+               save.each(function(){
+                  $(this).button();
+                  $(this).click(function( event ) {
+                    event.preventDefault();
+                  });
+               });
+               
+               if(obj.hasClass('scope'))
+               {
+                 
+                  var data = angular.element('[ng-controller=Page]').scope().getData(selector);console.log(data);
+                  console.log('#'+selector+'plotPlot');
+                  $('#'+selector+'plotPlot').addClass('plotArea');
+                   $.plot('#'+selector+'plotPlot',[data])
+               }
+               /*
+               var sliders = params.find('.range');
+               sliders.each(function(){
+                  $(this).slider({
+                          min: $(this).data('min'),
+                          max: $(this).data('max'),
+                          value: $(this).data('value'),
+                          slide: function( event, ui ) {
+                            $( '#'+$(this).attr('id')+'Label' ).text(ui.value );
+                               },
+                      }); 
+                  $( '#'+$(this).attr('id')+'Label' ).text($(this).data('value') );
+               });*/
+               /*if(obj.hasClass('clicked'))
                     {
                         obj.removeClass('clicked');
                         
@@ -145,8 +200,15 @@ function clickable(selector){
                         }
                         
                     }
-                         
+                   */      
             });
         
     };
+}
+
+function download(filename, text) {
+    var pom = document.createElement('a');
+    pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    pom.setAttribute('download', filename);
+    pom.click();
 }

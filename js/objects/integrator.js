@@ -13,13 +13,31 @@ var Integrator = function(config){
         'outFunc' : [null],
 
     };
-    this.previousValues = [0];
+    this.previousValues = {'start':0};
     this.settings = $.extend({},this.settings,basicConfig);
     
     this.settings = $.extend({},this.settings,config);
     this.endpoints = $.extend([],this.endpoints,[]);
-    this.integratorInRow = 0;
+    this.parameters = [
+        {   
+            'type' : 'text',
+            'label' : 'Wartość początkowa',
+            'value' : this.previousValues.start,
+            'id' : 'start',
+        },];
+    
+    this.updateParameters = function(){
+      
+      var allParams = $('#'+this.settings.id+'Parameters').find('.boxParameterContent');
+      for (var i=0;i<this.parameters.length;i++)
+      {
+          var singleParam =  allParams.find('#'+this.settings.id+this.parameters[i].id);
+          this.previousValues[this.parameters[i].id] = singleParam.val();
+      }
+      
+    };
 }
+
 
 Integrator.prototype = new Block();
 Integrator.prototype.outputValue = function(y,h,time){
@@ -27,27 +45,11 @@ Integrator.prototype.outputValue = function(y,h,time){
    
     //var prev = this.previousValues;
     if(time===0)
-        return this.previousValues[0] ; 
+        return this.previousValues.start ; 
     else
-    {
     
-        var output = parseFloat(this.previousValues[this.previousValues.length-1]) + y*h;
-        this.previousValues.push(output);
-        this.previousValues.splice(0,1);
-        console.log(this.previousValues);
-         if(time>=(h+this.integratorInRow*h))
-         {
-
-            return this.previousValues[0] ; 
-        }
-        else
-             return this.previousValues[0] ; 
-    }
+        return parseFloat(this.previousValues.start) + y*h;
+       
+    
 }
 
-Integrator.prototype.setIntegrator = function(number){
-    this.integratorInRow = number;
-    console.log(number);
-    for(var i=0;i<number;i++)
-        this.previousValues.push(0);
-}

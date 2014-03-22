@@ -27,14 +27,14 @@ var Multiply = function(config){
 
   
     this.parameters = [
-        {   
+        /*{   
             'type' : 'textPositionsIn',
             'label' : '',
             'value' : [positions.left,positions.bottom],
             'id' : 'ItextPositionsIn',
             'func' : ['mul','mul'],
             'positionsLabel' : ['Prawo','Lewo','Dó³','Góra'],
-        },
+        },*/
        /* {   
             'type' : 'controlgroup',
             'label' : '',
@@ -75,7 +75,7 @@ Multiply.prototype = new Block();
 Multiply.prototype.updateParameters = function(){
   
     
-  
+  /*
    this.settings.inPos.length = 0;
    
    for(var i=0; i< this.parameters[0].value.length; i++) 
@@ -93,21 +93,21 @@ Multiply.prototype.updateParameters = function(){
        jsPlumb.deleteEndpoint(this.endpoints[j]);
    
    this.endpoints.length = 0;
-   
+   */
   // this.setConnectors();
  //  this.updatePosition();
    
 }
 Multiply.prototype.outputValue = function(){
-    var outVal = 0;
+    var outVal = 1;
       
-
     for(var i=0;i<this.settings.inPos.length;i++)
     {
         
         //if(this.settings.inPos[i].func.indexOf('add') === -1)
          //   outVal = parseFloat( outVal - this.previousValues[this.settings.inPos[i].func] );
        // else
+       console.log(this.previousValues[this.settings.inPos[i].func]);
            outVal = parseFloat( outVal * this.previousValues[this.settings.inPos[i].func] );
     }
     //console.log(outVal);

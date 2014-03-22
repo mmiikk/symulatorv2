@@ -2,8 +2,19 @@ function Toolbox($scope){
     $scope.tools = [
         {   'groupName':'Wymuszenia',
             'items': [ {   'id':'step','name':'step','type':'step',},] },
-        {   'groupName':'Wymuszenia',
+        {   'groupName':'Wyj≈õcia',
             'items': [ {   'id':'scope','name':'scope','type':'scope',},] },
+         {   'groupName':'Ciπg≥e',
+            'items': [ {   'id':'integrator','name':'integrator','type':'integrator',},
+                        {   'id':'transferFcn','name':'transferFcn','type':'transferFcn',},
+            ] },
+         {   'groupName':'Inne',
+            'items': [ {   'id':'feedback','name':'feedback','type':'feedback',},] },
+        {   'groupName':'Operacje matematyczne',
+            'items': [ {   'id':'sum','name':'sum','type':'sum',},
+                        {   'id':'multiply','name':'multiply','type':'multiply',},
+                        {   'id':'mathfcn','name':'mathfcn','type':'mathfcn',},
+            ] },
         
        
     ];
@@ -11,11 +22,10 @@ function Toolbox($scope){
 }
 
 function Page($scope){
-    $scope.objects = [
-        
-    ];
-    
+    $scope.objects = [];
     $scope.temps = [];
+    $scope.properties = [];
+    
     $scope.addTemp = function(name){
                 
         $scope.temps.push({
@@ -36,6 +46,21 @@ function Page($scope){
         $scope.temps = [];
         $scope.$apply();
     }
+     $scope.getData = function(selector){
+        var scope = getObjectByID(selector);
+        console.log(scope);
+        return scope[0].previousValues;
+    }
+    $scope.setToInitial = function(){
+        var scope = getObjectByType('scope');
+       //console.log(length(scope));
+        for(var i=0; i<scope.length; i++)
+        {
+            scope[i].previousValues = [];
+        }
+       
+    }
+    
     
     $scope.removeObject = function(id){
         var oldObjects = $scope.objects;
@@ -48,13 +73,16 @@ function Page($scope){
         //console.log($scope.objects);
     }
     
-    $scope.getObject = function(id){
+    function getObjectByID(id){
         return _.filter($scope.objects,function(obj){return obj.settings.id===id;});        
+    }
+    function getObjectByType(type){
+        return _.filter($scope.objects,function(obj){return obj.settings.type===type;});        
     }
     var ppp=0;
     $scope.addObject = function(position, toolboxWidth, id){
         //console.log(toolboxWidth);
-        var pos = [positions.bottom,positions.top];
+       
         var blockId = id+getMaxID();
         
         var constructor = {'id':id+getMaxID(),
@@ -87,7 +115,7 @@ function Page($scope){
                     var block = new Gain(constructor);
                 break;
              case 'transferFcn':
-                    var block = new Gain(constructor);
+                    var block = new TransferFcn(constructor);
                 break;
             case 'square':
                 var block = new Gain(constructor);
@@ -95,12 +123,16 @@ function Page($scope){
             case 'multiply':
                 var block = new Multiply(constructor);
             break;
+             case 'mathfcn':
+                var block = new MathFcn(constructor);
+            break;
            
         }
               
        
         
         $scope.objects.push( block ) ;
+                
         
         $scope.$apply();
         
@@ -108,6 +140,7 @@ function Page($scope){
        
         block.updatePosition(); 
         block.setConnectors();
+        block.setParametersDraggable();
         
        
         return blockId;
@@ -154,7 +187,10 @@ function Page($scope){
         
     }
     
-  
+    $scope.getObjects = function()
+    {
+        return $scope.objects;        
+    }
   
     function getMaxID(){
         return ($scope.objects.length);

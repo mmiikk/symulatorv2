@@ -18,6 +18,17 @@ var Step = function(config){
     
     this.endpoints = $.extend([],this.endpoints,[]);
     
+    this.updateParameters = function(){
+      
+      var allParams = $('#'+this.settings.id+'Parameters').find('.boxParameterContent');
+      for (var i=0;i<this.parameters.length;i++)
+      {
+          var singleParam =  allParams.find('#'+this.settings.id+this.parameters[i].id);
+          this.previousValues[this.parameters[i].id] = singleParam.val();
+      }
+      
+    };
+    
     this.previousValues = {
         'start' : 0,
         'end' : 1,
@@ -26,20 +37,20 @@ var Step = function(config){
     
     this.parameters = [
         {   
-            'type' : 'range',
-            'label' : 'Wartoœæ pocz¹tkowa',
+            'type' : 'text',
+            'label' : 'WartoÅ›Ä‡ poczÄ…tkowa',
             'value' : this.previousValues.start,
             'id' : 'start',
         },
         {   
-            'type' : 'range',
-            'label' : 'Wartoœæ koñcowa',
+            'type' : 'text',
+            'label' : 'WartoÅ›Ä‡ koÅ„cowa',
             'value' : this.previousValues.end,
             'id' : 'end',
         },
         {   
-            'type' : 'range',
-            'label' : 'OpóŸnienie',
+            'type' : 'text',
+            'label' : 'OpÃ³Åºnienie',
             'value' : this.previousValues.delay,
             'id' : 'delay',
         }
