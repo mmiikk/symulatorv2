@@ -23,26 +23,10 @@ var Multiply = function(config){
     this.previousValues = buildPreviousValuesObject(basicConfig.inPos);
     this.endpoints = $.extend([],this.endpoints,[]);
    
-     console.log(this.endpoints);
-
+    
   
     this.parameters = [
-        /*{   
-            'type' : 'textPositionsIn',
-            'label' : '',
-            'value' : [positions.left,positions.bottom],
-            'id' : 'ItextPositionsIn',
-            'func' : ['mul','mul'],
-            'positionsLabel' : ['Prawo','Lewo','Dó³','Góra'],
-        },*/
-       /* {   
-            'type' : 'controlgroup',
-            'label' : '',
-            'value' : [positions.right],
-            'id' : 'subCheckbox',
-            'positions' : [positions.right,positions.left,positions.bottom,positions.top],
-            'positionsLabel' : ['Prawo','Lewo','Dó³','Góra'],
-        },*/
+       
         
         
        
@@ -72,32 +56,7 @@ function updateFunc(functions){
     return prevVal;
 }
 Multiply.prototype = new Block();
-Multiply.prototype.updateParameters = function(){
-  
-    
-  /*
-   this.settings.inPos.length = 0;
-   
-   for(var i=0; i< this.parameters[0].value.length; i++) 
-       this.settings.inPos.push({'position':this.parameters[0].value[i],'func':this.parameters[0].func[i]});
-   
-   updateFunc(this.settings.inPos);
-   
-   
-   
-   this.settings.in = this.parameters[0].value.length;
-   this.previousValues = buildPreviousValuesObject(this.settings.inPos);
-   
-  
-   for(var j=0; j< this.endpoints.length; j++)
-       jsPlumb.deleteEndpoint(this.endpoints[j]);
-   
-   this.endpoints.length = 0;
-   */
-  // this.setConnectors();
- //  this.updatePosition();
-   
-}
+
 Multiply.prototype.outputValue = function(){
     var outVal = 1;
       

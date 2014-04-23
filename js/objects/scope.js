@@ -30,6 +30,7 @@ var Scope = function(config){
             'value' : this.previousValues,
             'id' : this.settings.id+'plot',
         },
+        
        
     ];
 }

@@ -1,9 +1,9 @@
 jsPlumb.ready(function(){
    jsPlumb.Defaults.ConnectionOverlays =[ ["Arrow", { location:1 } ] ]; 
-   jsPlumb.Defaults.Connector = [ "Flowchart", { stub:[40, 60], gap:1, cornerRadius:5, alwaysRespectStubs:true } ];		
+   jsPlumb.Defaults.Connector = [ "Flowchart", {  cornerRadius:5, alwaysRespectStubs:true } ];		
 });
 
-var connectorSettings = [ "Flowchart", { stub:[100, 100], gap:1, cornerRadius:5, alwaysRespectStubs:false, midPoint: 1 } ];
+var connectorSettings = [ "Flowchart", {  cornerRadius:5, alwaysRespectStubs:false, midPoint: 1 } ];
 
 var positions = {
   
@@ -19,6 +19,21 @@ var positions = {
   
   
 };
+var positionsSum = {
+  
+  left: [ 0, 0.5, -1, 0 ],
+  leftBottom: [ 0.15, 0.85, 1, 0 ],
+  top:   [ 0.5, 0 , -0.5, 0],
+  leftTop: [ 0.15, 0.15, -1, 0 ],
+  bottom:   [ 0.5, 1 , 0, 1],
+  rightBottom: [ 0.85, 0.85, -1, 0 ],
+  right:  [ 1, 0.5, 1, 0 ],
+  rightTop: [ 0.85, 0.15, -1, 0 ],
+  
+  
+  
+};
+
 var connectorPaintStyle = {
 				lineWidth:4,
 				strokeStyle:"#deea18",
@@ -39,6 +54,8 @@ Array.prototype.move = function (old_index, new_index) {
 };
        
        
+
+       
  $(function () {
 
         // Button
@@ -54,6 +71,7 @@ Array.prototype.move = function (old_index, new_index) {
                         
          $('#toolbox').draggable();
          $('#toolbox').resizable();
+         $('#simulationParamsBox').draggable();
            
          $('#page .block').each(function(){
             $(this).resizable(); 
@@ -63,17 +81,41 @@ Array.prototype.move = function (old_index, new_index) {
  $(document).ready(function(){
     $('#run').click(function(){
       angular.element('[ng-controller=Page]').scope().setToInitial();
-      $().solver('init',[jsPlumb.getAllConnections(),angular.element('[ng-controller=Page]').scope().objects]);   
+      
+      
+      $().solver('init',[jsPlumb.getAllConnections(),angular.element('[ng-controller=Page]').scope().objects,
+          $('#timeHorizon').val(),$('#integrateStep').val()]);   
     });
     
     $('#save').click(function(){
         var  data = angular.element('[ng-controller=Page]').scope().getObjects();
-    //    saveToFile(data);
-        tfc(1,0.5,0);
-      //download('test.txt', data);
+        saveToFile(data);
+        //tfc(1,0.5,0);
+        download('test.txt', saveToFile(data));
     });
     
     
+   
+    $('#open').click(function(e){
+       $('#files').click();
+
+    });
+    
+     $('#files').change(function(evt){
+         console.log(loadFromFile(evt));
+         
+        
+         console.log(files);
+     });
+    
+    
+     $('#simulationParams').click(function(){
+         console.log('a');
+         $('#simulationParamsBox').toggleClass('boxClosed'); 
+     });
+    $('#simulationParamsBox .boxClose').click(function(){
+       $('#simulationParamsBox').toggleClass('boxClosed'); 
+    });
     
     
     $('.block').each(function(){
@@ -86,6 +128,24 @@ Array.prototype.move = function (old_index, new_index) {
     });
     $('#toolbox .boxClose').click(function(){
        $('#toolbox').toggleClass('boxClosed'); 
+    });
+    
+    $('#simulationParamsBox input[type=text]').each(function(){
+       $(this).keypress(function(e){
+           if($(this).hasClass("numeric"))
+               {
+                   
+                   
+                   if(!$.isNumeric(String.fromCharCode(e.keyCode)) && e.keyCode!==46)
+                        e.preventDefault();
+                    if(e.keyCode===46)
+                    {
+                        if($(this).val().indexOf(".")!==-1) 
+                            e.preventDefault();
+                    }
+                   
+               }
+       }) ;
     });
     
      $('.spacer').each(function(){
@@ -127,9 +187,34 @@ Array.prototype.move = function (old_index, new_index) {
  
 function clickable(selector){
     return function(){
-        var obj = $('#page').find('#'+selector);
-           obj.dblclick(function(){
-               var params = $('#page').find('#'+selector+'Parameters');
+        
+          var obj = $('#page').find('#'+selector);
+        obj.contextPopup({
+        title: 'My Popup Menu',
+        items: [
+          
+          {label:'Edytuj', icon:'lib/images/page_white_edit.png',    action:function() { return edit() } },
+          {label:'Usuñ',     icon:'lib/images/page_white_delete.png', action:function() { return dele() } },
+        ]});
+
+        function dele(){
+            
+            var endpoints = angular.element('[ng-controller=Page]').scope().getObject(selector);
+            angular.element('[ng-controller=Page]').scope().removeObject(selector);
+
+             for(var j=0; j< endpoints[0].endpoints.length; j++)
+                  jsPlumb.deleteEndpoint(endpoints[0].endpoints[j]);
+             jsPlumb.detachAllConnections(selector);
+
+
+             angular.element('[ng-controller=Page]').scope().refresh();
+            
+            console.log(angular.element('[ng-controller=Page]').scope().getObjects());
+        }
+
+        function edit(){
+            
+             var params = $('#page').find('#'+selector+'Parameters');
                params.removeClass('boxClosed');
                var closeParams = params.find('.boxClose');
                closeParams.click(function(){
@@ -140,8 +225,18 @@ function clickable(selector){
                save.each(function(){
                   $(this).button();
                   $(this).click(function( event ) {
+                      if(obj.hasClass('scope'))
+                        {
+                            var data = angular.element('[ng-controller=Page]').scope().getData(selector);
+                            var toSave = '';
+                            for(var i=0; i<data.length;i++)
+                                toSave += data[i][0]+'\t'+data[i][1]+'\r\n';
+                            download(selector+'.txt', toSave);
+                        }
+                                          
                     event.preventDefault();
                   });
+                  
                });
                
                if(obj.hasClass('scope'))
@@ -152,56 +247,20 @@ function clickable(selector){
                   $('#'+selector+'plotPlot').addClass('plotArea');
                    $.plot('#'+selector+'plotPlot',[data])
                }
-               /*
-               var sliders = params.find('.range');
-               sliders.each(function(){
-                  $(this).slider({
-                          min: $(this).data('min'),
-                          max: $(this).data('max'),
-                          value: $(this).data('value'),
-                          slide: function( event, ui ) {
-                            $( '#'+$(this).attr('id')+'Label' ).text(ui.value );
-                               },
-                      }); 
-                  $( '#'+$(this).attr('id')+'Label' ).text($(this).data('value') );
-               });*/
-               /*if(obj.hasClass('clicked'))
-                    {
-                        obj.removeClass('clicked');
-                        
-                        if( $('#page').find('.clicked').length === 0 )
-                            $('#remove').addClass('ui-disabled');
-                           
-                        if( $('#page').find('.clicked').length === 1)
-                        {
-                            $('#propertiesbtn').removeClass('ui-disabled');
-                             console.log('b');
-                           // buildProperties();
-                        }
-                        else
-                            $('#propertiesbtn').addClass('ui-disabled');
-                    }
-                else
-                    {
-                        obj.addClass('clicked');
-                        if( $('#page').find('.clicked').length !== 0 )
-                        {
-                            $('#remove').removeClass('ui-disabled');
-                            if( $('#page').find('.clicked').length === 1)
-                            {
-                                $('#propertiesbtn').removeClass('ui-disabled');
-                                console.log('a');
-                               // buildProperties();
-                                console.log('a');
-                            }
-                            else
-                                $('#propertiesbtn').addClass('ui-disabled');
-                                    
-                        }
-                        
-                    }
-                   */      
-            });
+             
+            
+        }
+        
+        
+        // $('.context-menu-one').on('click', function(e){
+        
+       // if(this === 'edit')
+        
+       // console.log('clicked', this);
+   // })
+      
+    
+         
         
     };
 }
@@ -212,3 +271,4 @@ function download(filename, text) {
     pom.setAttribute('download', filename);
     pom.click();
 }
+

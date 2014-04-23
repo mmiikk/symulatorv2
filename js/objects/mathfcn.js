@@ -7,11 +7,11 @@ var MathFcn = function(config){
         'out' : '1',
         'left' : '0',
         'top' : '0',
-        'inPos' : [{'position':positions.left, 'func':'mul'},
+        'inPos' : [{'position':positions.left, 'func':''},
                    
                     ],
-        'outPos' : [{'position':positions.right}],
-        
+        'outPos' : [{'position':positions.right, 'func':''}],
+      
 
     };
     
@@ -20,16 +20,15 @@ var MathFcn = function(config){
     this.settings = $.extend({},this.settings,basicConfig);
     
     this.settings = $.extend({},this.settings,config);
-    this.previousValues = 'u*u';
+    this.previousValues = { 'mathfcn': 'u*u'};
     this.endpoints = $.extend([],this.endpoints,[]);
    
-     console.log(this.endpoints);
-
+    
   
     this.parameters = [
        {   
             'type' : 'text',
-            'label' : '',
+            'label' : 'Funkcja',
             'value' : 'u*u',
             'id' : 'mathfcn',
           
@@ -50,40 +49,12 @@ var MathFcn = function(config){
 
 
 MathFcn.prototype = new Block();
-MathFcn.prototype.updateParameters = function(){
-  
-    var allParams = $('#'+this.settings.id+'Parameters').find('.boxParameterContent');
-    var singleParam =  allParams.find('#'+this.settings.id+this.parameters[0].id);
-    this.previousValues = singleParam.val();
-   
-  /*
-   this.settings.inPos.length = 0;
-   
-   for(var i=0; i< this.parameters[0].value.length; i++) 
-       this.settings.inPos.push({'position':this.parameters[0].value[i],'func':this.parameters[0].func[i]});
-   
-   updateFunc(this.settings.inPos);
-   
-   
-   
-   this.settings.in = this.parameters[0].value.length;
-   this.previousValues = buildPreviousValuesObject(this.settings.inPos);
-   
-  
-   for(var j=0; j< this.endpoints.length; j++)
-       jsPlumb.deleteEndpoint(this.endpoints[j]);
-   
-   this.endpoints.length = 0;
-   */
-  // this.setConnectors();
- //  this.updatePosition();
-   
-}
+
 MathFcn.prototype.outputValue = function(u,h){
     var outVal = 1;
-      
-    outVal = eval(this.previousValues);
-    
+      console.log(this.previousValues);
+    outVal = eval(this.previousValues.mathfcn);
+    console.log(outVal);
     return outVal;
 }
 

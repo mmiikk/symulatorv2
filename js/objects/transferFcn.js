@@ -22,7 +22,7 @@ var TransferFcn = function(config){
        {   
             'type' : 'text',
             'label' : 'num',
-            'value' : '[1]',
+            'value' : this.previousValues.num,
             'id' : 'num',
           
            
@@ -30,7 +30,7 @@ var TransferFcn = function(config){
         {   
             'type' : 'text',
             'label' : 'den',
-            'value' : '[1,1]',
+            'value' : this.previousValues.den,
             'id' : 'den',
           
            
@@ -52,15 +52,20 @@ TransferFcn.prototype.updateParameters = function(){
     for(var i=0;i<this.parameters.length;i++)
     {
         var singleParam =  allParams.find('#'+this.settings.id+this.parameters[i].id);
-        console.log(singleParam);
-        this.previousValues[this.parameters[i].id] = singleParam.val();
+        console.log(eval(singleParam.val()));
+        this.previousValues[this.parameters[i].id] = eval(singleParam.val());
     }
+    console.log( this.previousValues);
    // matrixInit();
     //var singleParam =  allParams.find('#'+this.settings.id+this.parameters[0].id);
   //  this.previousValues = singleParam.val();
   
   
  // function matrixInit(){
+    this.buildArrays();
+
+}
+TransferFcn.prototype.buildArrays = function(){
     this.integrals =[];
    
     for(var i=0;i<eval(this.previousValues.den).length-1;i++)
@@ -85,8 +90,8 @@ TransferFcn.prototype.updateParameters = function(){
            
         }
     }
-
 }
+
 TransferFcn.prototype.outputValue = function(y,h){
   //  var tf = [1 1 1];
   //  var tfp[0] = 
@@ -162,12 +167,7 @@ TransferFcn.prototype.outputValue = function(y,h){
         }
         
         b=0;
-       //  console.log(derivates[0]);
-          //           console.log(derivatesPrev[0]);
-     //  console.log(w);
-       //console.log(derivates);
-       //  console.log(derivates[0]);
-       // console.log(derivatesPrev[0]);
+       
          for(var i=0;i<this.integrals.length;i++)
         {
            this.integrals[i][0]=this.integrals[i][1];
@@ -187,8 +187,10 @@ TransferFcn.prototype.outputValue = function(y,h){
         else
             this.integrals[i][1]=this.integrals[i][0]+this.integrals[i-1][0]*h;
     }
-    
-    
+    console.log(this.settings.id);
+    console.log(this.integrals) ;
+    console.log(this.previousValues);
+    console.log(eval(this.previousValues.den));
          return this.integrals[eval(this.previousValues.den).length-2][0];
     // console.log(integrals)   
 }

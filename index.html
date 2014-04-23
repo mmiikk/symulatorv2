@@ -13,17 +13,22 @@
     
     <script src="lib/jquery.jsPlumb-1.5.2-min.js"></script>
     <script src="lib/jquery.flot.min.js"></script>
+    <script src="lib/jquery.browser.js"></script>
 
     <script src="lib/jquery-ui-1.10.3.custom.min.js"></script>
     <script src="lib/underscore.js"></script>
+    
+    <script src="lib/jquery.contextmenu.js"></script>
     <script src="js/index.js"></script>
         
     <link rel="stylesheet" href="css/jquery.mobile-1.3.1.min.css" />
+     <link rel="stylesheet" href="css/jquery.contextMenu.css" />
     <link rel="stylesheet" href="css/objects.css" />
     <link rel="stylesheet" href="css/jquery-ui.css" />
     
     <script src="js/customParams.js"></script>
     <script src="js/save.js"></script>
+    <script src="js/load.js"></script>
     
     <script src="js/solver.js"></script>
     <script src="js/test.js"></script>
@@ -38,23 +43,29 @@
     <script src="js/objects/transferFcn.js"></script>
     <script src="js/objects/multiply.js"></script>
     <script src="js/objects/mathfcn.js"></script>
+    <script src="js/objects/pulse.js"></script>
+     <script src="js/objects/sin.js"></script>
 
 </head>
 <body>
     <header>
         <div class="leftHeader">
             <ul class="icons ui-widget ui-helper-clearfix">
-            <li class="ui-state-default ui-corner-all" id="showToolbox"><span class="ui-icon ui-icon-wrench"></span></li>
+            <li class="ui-state-default ui-corner-all" id="showToolbox"><span class="ui-icon ui-icon-note"></span></li>
             </ul>
         </div>
         <div class="rightHeader">
             <ul class="icons ui-widget ui-helper-clearfix">
             <li class="ui-state-default ui-corner-all" ><span class="ui-icon ui-icon-play" id="run"></span></li>
+            <li class="ui-state-default ui-corner-all" ><span class="ui-icon ui-icon-wrench" id="simulationParams"></span></li>
             <li class="ui-state-default ui-corner-all" ><span class="ui-icon ui-icon-disk" id="save"></span></li>
+            <li class="ui-state-default ui-corner-all" ><span class="ui-icon ui-icon-folder-open" id="open"></span></li>
+            <input type="file" id="files" name="files[]" multiple />
             </ul>
         </div>
     </header>
     <div id="container">
+        
         <div id="toolbox" class="box boxClosed">
             <div class="boxHeader">Narzędzia
                 <ul class="icons ui-widget ui-helper-clearfix">
@@ -77,10 +88,36 @@
                         </div>
                     </div>
                 </div>
+                
+                
         </div>
         </div>
         <div id="page" ng-controller="Page">
-            <div ng-repeat="object in objects" class="block object {{object.settings.type}}" id="{{object.settings.id}}">
+            <div id="simulationParamsBox" class="box boxParameter boxClosed">
+                <div class="boxHeader">Parametry Symulacji<ul class="icons ui-widget ui-helper-clearfix">
+                    <li class="ui-state-default ui-corner-all boxClose" ><span class="ui-icon ui-icon-circle-close "></span></li>
+                    </ul>
+                </div>
+                <div class="boxParameterContent">
+                    <div>
+                         <h3>Krok całkowania</h3>
+                         <div class="textContainer">
+                             <input type="text" id="integrateStep" class="numeric" value="0.01" >
+
+                         </div>
+                     </div>
+                    <div>
+                         <h3>Czas symulacji</h3>
+                         <div class="textContainer">
+                             <input type="text" id="timeHorizon" class="numeric" value="10" >
+
+                         </div>
+                     </div>
+                
+                </div>
+            </div>
+            
+            <div ng-repeat="object in objects" class="block object {{object.settings.type}} context-menu-one box menu-1" id="{{object.settings.id}}">
                     <span class="blockImage">
                         <span class="blockText">{{object.settings.name}}</span>
                     </span>
@@ -94,12 +131,19 @@
                             </ul>
                        </div>
                        <div class="boxParameterContent">
+                           <div>
+                                <h3>Nazwa</h3>
+                                <div class="textContainer">
+                                    <input type="text" id="{{object.settings.id}}label" class="text" value="{{object.settings.name}}" >
+                                                                       
+                                </div>
+                            </div>
                             <div ng-repeat="parameter in object.parameters" >
                                 <h3>{{parameter.label}}</h3>
                                 <div class="{{parameter.type}}Container">
-                                    <input type="{{parameter.type}}" id="{{object.settings.id}}{{parameter.id}}" class="{{parameter.type}}" value="{{parameter.value}}" >
+                                    <input type="text" id="{{object.settings.id}}{{parameter.id}}" class="{{parameter.type}}" value="{{parameter.value}}" >
                                     <div id="{{parameter.id}}Plot" class=""></div>
-                                    
+                                   
                                 </div>
                             </div>
                             <input type="submit" value="Zapisz" ng-click="object.updateParameters();">

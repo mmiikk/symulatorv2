@@ -1,4 +1,4 @@
-var Constant = function(config){
+var Constant = function(config,prevVal,params){
    
     var basicConfig = {
         'id' : 'constant',
@@ -23,6 +23,8 @@ var Constant = function(config){
         
     };
     
+    this.previousValues = $.extend({},this.previousValues,prevVal);
+    
     this.parameters = [
         
         {   
@@ -33,6 +35,8 @@ var Constant = function(config){
         },
        
     ];
+    
+    this.parameters = $.extend({},this.parameters,params);
 }
 
 Constant.prototype = new Block();

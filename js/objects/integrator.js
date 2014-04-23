@@ -26,29 +26,39 @@ var Integrator = function(config){
             'id' : 'start',
         },];
     
-    this.updateParameters = function(){
-      
-      var allParams = $('#'+this.settings.id+'Parameters').find('.boxParameterContent');
-      for (var i=0;i<this.parameters.length;i++)
-      {
-          var singleParam =  allParams.find('#'+this.settings.id+this.parameters[i].id);
-          this.previousValues[this.parameters[i].id] = singleParam.val();
-      }
-      
-    };
+    
 }
 
 
 Integrator.prototype = new Block();
-Integrator.prototype.outputValue = function(y,h,time){
+Integrator.prototype.outputValue = function(y,h,time,sourceID){
     
-   
+    if(sourceID.toString()===this.settings.id)
+    {
     //var prev = this.previousValues;
-    if(time===0)
-        return this.previousValues.start ; 
+        if(time===0)
+        {
+            var prevOut = parseFloat(this.previousValues.start);
+            this.previousValues.start = parseFloat(this.previousValues.start) + y*h;
+            
+            return prevOut ; 
+        }
+        else
+        {
+            var prevOut = parseFloat(this.previousValues.start);
+            this.previousValues.start = parseFloat(this.previousValues.start) + y*h;
+            
+            return prevOut ; 
+        }
+    }
     else
-    
-        return parseFloat(this.previousValues.start) + y*h;
+    {
+        if(time===0)
+            return parseFloat(this.previousValues.start) ; 
+        else
+            return parseFloat(this.previousValues.start);
+            
+    }
        
     
 }

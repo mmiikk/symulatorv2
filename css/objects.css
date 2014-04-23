@@ -107,9 +107,14 @@ body {
 .plot {
     display:none;
 }
+
 .plotArea{
     min-height: 190px;
     
+}
+
+#files {
+    display:none;
 }
 /********
 
@@ -135,13 +140,39 @@ BLOCKS
     background: white;
 }
 .blockImage {
-    border: 2px #525252 solid;
     width:100%;
 }
 .blockText {
     color: #525252;
+    position: absolute;
+    margin-top:50px;
 }
 
+
+
+.step {
+    background:url('../img/step.png') no-repeat;
+    
+}
+.scope {
+     background:url('../img/scope.png') no-repeat;
+}
+.integrator {
+     background:url('../img/integrator.png') no-repeat;
+}
+.transferFcn {
+     background:url('../img/transferfcn.png') no-repeat;
+}
+.multiply {
+     background:url('../img/multiply.png') no-repeat;
+}
+.mathfcn {
+     background:url('../img/math.png') no-repeat;
+}
+.feedback .blockText {
+    display:none;
+    
+}
 /******
 
 FEEDBACK
@@ -154,3 +185,17 @@ FEEDBACK
     background-position:-2 20;
     border:0;
 }
+
+/******
+
+SUM
+
+***/
+.sumLabelCss {
+    color:#3399ff;
+    font-size:30px;
+    line-height:20px;
+    font-weight:bold;
+    z-index:55;
+}
+

@@ -1,7 +1,9 @@
 function Toolbox($scope){
     $scope.tools = [
         {   'groupName':'Wymuszenia',
-            'items': [ {   'id':'step','name':'step','type':'step',},] },
+            'items': [ {   'id':'step','name':'step','type':'step',},
+                       {   'id':'pulse','name':'pulse','type':'pulse',},
+                       {   'id':'sin','name':'sin','type':'sin',},] },
         {   'groupName':'Wyj≈õcia',
             'items': [ {   'id':'scope','name':'scope','type':'scope',},] },
          {   'groupName':'Ciπg≥e',
@@ -79,17 +81,30 @@ function Page($scope){
     function getObjectByType(type){
         return _.filter($scope.objects,function(obj){return obj.settings.type===type;});        
     }
+    
+    $scope.getObject = function(id){
+        return getObjectByID(id);
+    }
+    
     var ppp=0;
-    $scope.addObject = function(position, toolboxWidth, id){
+    $scope.addObject = function(position, toolboxWidth, id,fromFile){
         //console.log(toolboxWidth);
-       
-        var blockId = id+getMaxID();
-        
-        var constructor = {'id':id+getMaxID(),
-                                 'name':id + ' ' + getMaxID(),
-                                 'left':parseInt(position.left),
-                                 'top':position.top,
-                            } 
+        var blockId;
+       var constructor;
+       if(!fromFile)
+       {
+            blockId = id+getMaxID();
+            constructor = {'id':id+getMaxID(),
+                                     'name':id + ' ' + getMaxID(),
+                                     'left':parseInt(position.left),
+                                     'top':position.top,
+                                } 
+        } else {
+            blockId = position.settings.id;
+            constructor = position.settings;
+            id=position.settings.type;
+        } 
+            
        
         switch (id){
             case 'step':
@@ -126,6 +141,12 @@ function Page($scope){
              case 'mathfcn':
                 var block = new MathFcn(constructor);
             break;
+              case 'pulse':
+                var block = new Pulse(constructor);
+            break;
+              case 'sin':
+                var block = new Sin(constructor);
+            break;
            
         }
               
@@ -136,11 +157,23 @@ function Page($scope){
         
         $scope.$apply();
         
+        if(fromFile)
+        {
+            block.setFromFile(position);
+            if (id==='transferFcn') 
+            {console.log('aaaa');
+                block.buildArrays();
+            }
+        }
+        
+        $scope.$apply();
         block.setJsPlumb();
        
         block.updatePosition(); 
         block.setConnectors();
         block.setParametersDraggable();
+        
+        
         
        
         return blockId;
@@ -190,6 +223,11 @@ function Page($scope){
     $scope.getObjects = function()
     {
         return $scope.objects;        
+    }
+    
+    $scope.refresh = function()
+    {
+        $scope.$apply();        
     }
   
     function getMaxID(){

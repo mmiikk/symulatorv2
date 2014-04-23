@@ -18,17 +18,6 @@ var Step = function(config){
     
     this.endpoints = $.extend([],this.endpoints,[]);
     
-    this.updateParameters = function(){
-      
-      var allParams = $('#'+this.settings.id+'Parameters').find('.boxParameterContent');
-      for (var i=0;i<this.parameters.length;i++)
-      {
-          var singleParam =  allParams.find('#'+this.settings.id+this.parameters[i].id);
-          this.previousValues[this.parameters[i].id] = singleParam.val();
-      }
-      
-    };
-    
     this.previousValues = {
         'start' : 0,
         'end' : 1,
@@ -37,24 +26,27 @@ var Step = function(config){
     
     this.parameters = [
         {   
-            'type' : 'text',
+            'type' : 'numeric',
             'label' : 'Wartość początkowa',
             'value' : this.previousValues.start,
             'id' : 'start',
         },
         {   
-            'type' : 'text',
+            'type' : 'numeric',
             'label' : 'Wartość końcowa',
             'value' : this.previousValues.end,
             'id' : 'end',
         },
         {   
-            'type' : 'text',
+            'type' : 'numeric',
             'label' : 'Opóźnienie',
             'value' : this.previousValues.delay,
             'id' : 'delay',
         }
     ];
+    
+    console.log(this.parameters);
+  
 }
 
 Step.prototype = new Block();

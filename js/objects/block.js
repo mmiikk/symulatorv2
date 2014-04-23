@@ -15,17 +15,57 @@ var Block = function(){
    
     this.settings = settings;
     this.endpoints = [];
+    
+    
+    this.updateParameters = function(){
+      
+      var allParams = $('#'+this.settings.id+'Parameters').find('.boxParameterContent');
+      
+      for (var i=0;i<this.parameters.length;i++)
+      {
+          var singleParam =  allParams.find('#'+this.settings.id+this.parameters[i].id);
+          console.log(singleParam);
+          this.previousValues[this.parameters[i].id] = singleParam.val();
+      }
+      var singleParam =  allParams.find('#'+this.settings.id+'label');
+    console.log(singleParam);
+     this.settings.name = singleParam.val();
+      
+      
+    };
+    
+    
+    
         
 }
+
+Block.prototype.setFromFile = function(other){
+     this.previousValues = $.extend({},this.previousValues,other.previousValues);
+    console.log(other.previousValues);
+     console.log(this.parameters);
+     
+     if(this.hasOwnProperty('parameters'))
+     {
+        for(var i=0;i<this.parameters.length;i++)
+       {
+          console.log(other.previousValues[this.parameters[i].id]);
+          this.parameters[i].value = other.previousValues[this.parameters[i].id];
+       }
+     }
+}
+
 
 Block.prototype.updateParameters = function(){
     
     for(var i=0;i<this.parameters.length;i++)
     {
+       
        this.parameters[i].value = this.previousValues[this.parameters[i].id];
     }
    
 }
+
+
 
 Block.prototype.outputConfig = function(){
     return this.settings;        
@@ -86,6 +126,20 @@ Block.prototype.setConnectors = function(){
     
      function addTarget(id,position,func,endpoints){
          
+        var symbol;
+        console.log(position);
+        if(position.hasOwnProperty('func'))
+        {
+            console.log(position.func);
+            if(position.func!==null)
+            {
+                if(position.func.indexOf('add')!=-1)
+                    symbol='+';
+                else if(position.func.indexOf('sub')!=-1)
+                    symbol='-';
+            }
+        }
+         
         return function(){
             
             var endPoint = jsPlumb.addEndpoint(id, {
@@ -103,7 +157,7 @@ Block.prototype.setConnectors = function(){
                 parameters:{ 
                     'func' : position.func,
                 },
-                overlays:   [[ "Label", { label:position.func, id:"label", location:[2, 0.5] } ]],
+                overlays:   [[ "Label", { label:symbol, id:"label", location:position.funcPos, cssClass:"sumLabelCss" } ]],
             });
             endpoints.push(endPoint);
         };
@@ -117,5 +171,41 @@ Block.prototype.setParametersDraggable = function(){
             $( '#'+id+'Parameters').draggable();
             
         };
-    }  
+            
+    } 
+    
+    $(document).ready(setInputText(this.settings.id));
+   
+    function setInputText(id){
+        return function(){
+           $( "input[type=text]").keypress(function(e){
+              if($(this).hasClass("text"))
+                  console.log('a');
+              
+               if($(this).hasClass("numeric"))
+               {
+                   if(!$.isNumeric(String.fromCharCode(e.keyCode)) && e.keyCode!==46)
+                        e.preventDefault();
+                    if(e.keyCode===46)
+                    {
+                        if($(this).val().indexOf(".")!==-1) 
+                            e.preventDefault();
+                    }
+               }
+               
+               if($(this).hasClass("addsub"))
+               {
+                   if(String.fromCharCode(e.keyCode) !== '+' && String.fromCharCode(e.keyCode) !== '-')
+                       e.preventDefault();
+               }
+                  console.log();
+                  
+                  console.log($(this).attr('class'));
+                  
+                  
+           });
+            
+        };
+            
+    } 
 }

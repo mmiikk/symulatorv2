@@ -2,9 +2,9 @@
     var methods;
     var connections=[];
     var objects=[];
-    var sources = ['step','constant'];
+    var sources = ['step','constant','pulse','sin'];
     var sourcesSmall = ['feedback'];
-    var timeHorizon =1;
+    var timeHorizon = 1.5;
     var h =1;
     
     function validateModel(){
@@ -68,7 +68,7 @@
         
         //Sort object - first on the left starts
         sourcesBlocks.sort(function(a,b){return a.settings.left-b.settings.right});
-
+console.log(sourcesBlocks);
         //Explore connections array and build branch from start(source) to end(scope, sum ...)
         for(var i=0; i<sourcesBlocks.length ; i++)
         {
@@ -84,26 +84,28 @@
             else
                 order.push(blockConnections[0]);
             
-            
-            //remove connection from connections array        
-            connections.splice(removeConnection(blockConnections[0]),1);
-            
-            sourceBlock = blockConnections[0].targetId;
-
-            //find route from first block to the end of branch
-            //end loop when no other connections found - sum, scope detected
-            while(findConnection(sourceBlock,null).length !== 0)
+            if(typeof blockConnections[0]!== 'undefined')
             {
-                blockConnections = findConnection(sourceBlock,null);
-
-                order.push([blockConnections[0]]);
-                sourceBlock = blockConnections[0].targetId;
+                //remove connection from connections array        
                 connections.splice(removeConnection(blockConnections[0]),1);
 
+                sourceBlock = blockConnections[0].targetId;
 
+                //find route from first block to the end of branch
+                //end loop when no other connections found - sum, scope detected
+                while(findConnection(sourceBlock,null).length !== 0)
+                {
+                    blockConnections = findConnection(sourceBlock,null);
+
+                    order.push([blockConnections[0]]);
+                    sourceBlock = blockConnections[0].targetId;
+                    connections.splice(removeConnection(blockConnections[0]),1);
+
+
+                }
+                connContainer.push(order);
+                order=[];
             }
-            connContainer.push(order);
-            order=[];
         }
         return connContainer;
     }
@@ -201,7 +203,8 @@
             
             objects = model[1]; // Blocks (step, sum etc... )
             getConnections(model[0]);   //Connection between blocks
-          
+            timeHorizon = parseFloat(model[2]);
+            h=parseFloat(model[3]);
             
             var Order = [];
             
@@ -211,14 +214,13 @@
             var noSource = 0;
             for(var i=0;i<sources.length;i++)
             {
-               
-                if(getObjectByType(objects,sources[i]).length===0)
                     noSource++;
             }    
             console.log(noSource);
             if(noSource===2)
                 Order = buildBranchBySourceType('integrator',Order);
                
+               console.log(Order);
            
             Order = buildBranchBySourceType('feedback',Order); //Build branches as array row, where source is feedback
            
@@ -226,15 +228,19 @@
             orderBranchesByPriority(Order); //make Order in correct order
            console.log(Order);
                 var  y = 0 ;
-                var time = 0;
-                var h=0.01;
+               var time = 0;
+            //    var h=0.01;
+            //    
                 //var
                   console.log('####');
                       console.log('####');
                        console.log('####');
                         console.log('####'); console.log('####');
                 console.time('someFunction timer');
-                while(time<timeHorizon)
+                
+                console.log(h,timeHorizon);
+                console.log(time+h);
+                while(time<=timeHorizon)
                     {
                    
                         
@@ -249,7 +255,7 @@
                                        // console.log(obje);
                                          //   if(obje[0].settings.type =='feedback')
                                             
-                                        y=obje[0].outputValue(y,h,time);
+                                        y=obje[0].outputValue(y,h,time,Order[i][j][0].sourceId);
                                        
                                         var tar =  _.filter(objects,function(obj){ return obj.settings.id == Order[i][j][0].targetId});
                                                     if(tar[0].settings.type==='sum' || tar[0].settings.type==='multiply' )
@@ -265,7 +271,7 @@
                                               // console.log(Order[i][j][0]);
                                                var obje = _.filter(objects,function(obj){ return obj.settings.id == Order[i][j][0].sourceId});
                                               // console.log(obje);
-                                               y=obje[0].outputValue(y,h,time);
+                                               y=obje[0].outputValue(y,h,time,Order[i][j][0].sourceId);
                                                
                                                var tar =  _.filter(objects,function(obj){ return obj.settings.id == Order[i][j][0].targetId});
                                                     if(tar[0].settings.type==='sum' || tar[0].settings.type==='multiply')
@@ -279,7 +285,7 @@
                                                             {
                                                var obje = _.filter(objects,function(obj){ return obj.settings.id == Order[i][j][0].targetId});
                                              //  console.log(obje);
-                                               obje[0].outputValue(y,h,time);
+                                               obje[0].outputValue(y,h,time,Order[i][j][0].sourceId);
                                                             }
                                            }
                                         

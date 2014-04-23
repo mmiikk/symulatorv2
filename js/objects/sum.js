@@ -7,8 +7,8 @@ var Sum = function(config){
         'out' : '1',
         'left' : '0',
         'top' : '0',
-        'inPos' : [{'position':positions.left, 'func':'add'},
-                    {'position':positions.bottom, 'func':'sub'},
+        'inPos' : [{'position':[ 0, 0.33, -1, 0 ], 'func':'add', 'funcPos':[1.5,0.33]},
+                    {'position':[ 0, 0.667, -1, 0 ], 'func':'sub', 'funcPos':[1.5,0.4]},
                     ],
         'outPos' : [{'position':positions.right}],
         
@@ -28,7 +28,7 @@ var Sum = function(config){
   
     this.parameters = [
         {   
-            'type' : 'text',
+            'type' : 'addsub',
             'label' : '',
             'value' : '+-',
             'id' : 'sumSetting',
@@ -70,18 +70,39 @@ Sum.prototype.updateParameters = function(){
     var allParams = $('#'+this.settings.id+'Parameters').find('.boxParameterContent'); 
     var inputsString = allParams.find('#'+this.settings.id+this.parameters[0].id).val();
    this.settings.inPos.length = 0;
-    var keys = $.map(positions, function(v, i){
-   return i;
- });
+   
    var func;
+   
+   
+  
+   if(inputsString.length>2)
+   {
+        $('#'+this.settings.id).css("height",50 + 40*(inputsString.length-2) + "px");
+        
+        $('#'+this.settings.id).children().children().css("margin-top",50+ 40*(inputsString.length-2) + "px");
+    }
+    else
+    {
+        $('#'+this.settings.id).css("height",50 + "px");
+        
+        $('#'+this.settings.id).children().children().css("margin-top",50+ "px");
+    }
+   
+   var fromTop=0;
    for(var i=0; i< inputsString.length; i++) 
    {
        if(inputsString[i]==='-')
-           func = 'sub';
+            func = 'sub';
+      
         else
                func = 'add';
            
-       this.settings.inPos.push({'position':positions[keys[i]],'func':func});
+        fromTop = fromTop + 1/ (inputsString.length+1);  
+       
+       if(func=='sub')
+            this.settings.inPos.push({'position':[ 0, fromTop, -1, 0 ],'func':func, 'funcPos':[1.5,fromTop-0.15]});
+        else
+            this.settings.inPos.push({'position':[ 0, fromTop, -1, 0 ],'func':func, 'funcPos':[1.5,fromTop]});
    }
    
    updateFunc(this.settings.inPos);
